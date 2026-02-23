@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Social Web App</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        .navbar {
+            background-color: #1877f2;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .feed {
+            width: 500px;
+        }
+
+        .create-post {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            resize: none;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .post {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .like-btn {
+            background-color: #e4e6eb;
+            color: black;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">MyBook</div>
+
+<div class="container">
+    <div class="feed">
+
+        <div class="create-post">
+            <textarea id="postInput" rows="3" placeholder="What's on your mind?"></textarea>
+            <button onclick="addPost()">Post</button>
+        </div>
+
+        <div id="posts"></div>
+
+    </div>
+</div>
+
+<script>
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+    function savePosts() {
+        localStorage.setItem("posts", JSON.stringify(posts));
+    }
+
+    function renderPosts() {
+        const postsDiv = document.getElementById("posts");
+        postsDiv.innerHTML = "";
+
+        posts.forEach((post, index) => {
+            postsDiv.innerHTML += `
+                <div class="post">
+                    <p>${post.text}</p>
+                    <button class="like-btn" onclick="likePost(${index})">
+                        ❤️ ${post.likes}
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function addPost() {
+        const input = document.getElementById("postInput");
+        if (input.value.trim() === "") return;
+
+        posts.unshift({
+            text: input.value,
+            likes: 0
+        });
+
+        input.value = "";
+        savePosts();
+        renderPosts();
+    }
+
+    function likePost(index) {
+        posts[index].likes++;
+        savePosts();
+        renderPosts();
+    }
+
+    renderPosts();
+</script>
+
+</body>
+</html>
